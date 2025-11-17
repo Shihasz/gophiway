@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/Shihasz/gophiway/internal/api"
 	"github.com/Shihasz/gophiway/internal/config"
 	"github.com/Shihasz/gophiway/internal/database"
 	"github.com/gofiber/fiber/v2"
@@ -62,20 +63,8 @@ func main() {
 		})
 	})
 
-	// API routes
-	api := app.Group("/api/" + cfg.APIVersion)
-	
-	// Welcome route
-	api.Get("/", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{
-			"message": "Welcome to Gophiway API",
-			"version": cfg.APIVersion,
-			"docs":    "/api/" + cfg.APIVersion + "/docs",
-		})
-	})
-
-	// TODO: Register routes here
-	// setupRoutes(api, db, cfg)
+	// Setup API routes
+	api.SetupRoutes(app, db, cfg)
 
 	// Graceful shutdown
 	c := make(chan os.Signal, 1)
